@@ -1,0 +1,60 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define N 10
+
+double mean(double arr[], int n) {
+    double sum = 0.0;
+    for (int i = 0; i < n; i++) {
+        sum += arr[i];
+    }
+    return sum / n;
+}
+
+void linear_regression(double x[], double y[], int n, double *m, double *b) {
+    double x_mean = mean(x, n);
+    double y_mean = mean(y, n);
+    
+    double numerator = 0.0;
+    double denominator = 0.0;
+
+    for (int i = 0; i < n; i++) {
+        numerator += (x[i] - x_mean) * (y[i] - y_mean);
+        denominator += (x[i] - x_mean) * (x[i] - x_mean);
+    }
+
+    *m = numerator / denominator;
+    *b = y_mean - (*m) * x_mean;
+}
+
+double predict_price(double m, double b, double x) {
+    return m * x + b;
+}
+
+int main() {
+    double days[N];
+    double prices[N];
+    
+    printf("Enter the data for %d days (price and day)\n", N);
+    
+    for (int i = 0; i < N; i++) {
+        printf("Enter day %d: ", i + 1);
+        scanf("%lf", &days[i]);
+        printf("Enter price for day %d: ", i + 1);
+        scanf("%lf", &prices[i]);
+    }
+
+    double m, b;
+    
+    linear_regression(days, prices, N, &m, &b);
+
+    double next_day;
+    printf("Enter the day number to predict the price for: ");
+    scanf("%lf", &next_day);
+    
+    double predicted_price = predict_price(m, b, next_day);
+
+    printf("Predicted price for day %.0f is: %.2f\n", next_day, predicted_price);
+
+    return 0;
+}
